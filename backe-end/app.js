@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const stuffRoutes = require('./routes/stuff');
+const userRoutes = require('./routes/user');
 
 mongoose.connect('mongodb+srv://alexandrerobert22003440_db_user:<db_password>@cluster0.hphlibh.mongodb.net/?appName=Cluster0',
   { useNewUrlParser: true,
@@ -21,5 +22,6 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/stuff', stuffRoutes);
+app.use('/api/auth', userRoutes);
 
 module.exports = app;
