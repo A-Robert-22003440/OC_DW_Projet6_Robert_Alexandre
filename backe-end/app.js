@@ -2,14 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 
+require('dotenv').config();
+
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/user');
 
-mongoose.connect('mongodb+srv://alexandrerobert22003440_db_user:<db_password>@cluster0.hphlibh.mongodb.net/?appName=Cluster0',
-  { useNewUrlParser: true,
-    useUnifiedTopology: true })
+mongoose.connect(process.env.MONGODB_URL)
   .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
+  .catch((error) => console.log(error));
 
 const app = express();
 
