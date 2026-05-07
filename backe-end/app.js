@@ -4,7 +4,7 @@ const path = require('path');
 
 require('dotenv').config();
 
-const stuffRoutes = require('./routes/stuff');
+const bookRoutes = require('./routes/book');
 const userRoutes = require('./routes/user');
 
 mongoose.connect(process.env.MONGODB_URL)
@@ -22,7 +22,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api/stuff', stuffRoutes);
+app.use('/api/books', bookRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
