@@ -5,25 +5,17 @@ const jwt = require('jsonwebtoken');
 const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS, 10) || 10;
 
 exports.signup = (req, res, next) => {
-    User.findOne({ email: req.body.email })
-        .then((existingUser) => {
-            if (existingUser) {
-                return res.status(409).json({ error: 'Cet email existe deja !' });
-            }
-
-            bcrypt.hash(req.body.password, saltRounds)
-                .then(hash => {
-                    const user = new User({
-                        email: req.body.email,
-                        password: hash
-                    });
-                    user.save()
-                        .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-                        .catch(error => res.status(400).json({ error }));
-                })
-                .catch(error => res.status(500).json({ error }));
-    })
-    .catch(error => res.status(500).json({ error }));
+    bcrypt.hash(req.body.password, saltRounds)
+        .then(hash => {
+            const user = new User({
+                email: req.body.email,
+                password: hash
+            });
+            user.save()
+                .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+                .catch(error => res.status(400).json({ error }));
+        })
+        .catch(error => res.status(500).json({ error }));
 };
 
 exports.login = (req, res, next) => {

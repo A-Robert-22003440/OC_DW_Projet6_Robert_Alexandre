@@ -7,13 +7,11 @@ const ratingSchema = mongoose.Schema({
 
 const bookSchema = mongoose.Schema({
   title: { type: String, required: true },
-  description: { type: String, required: true },
   author: { type: String, required: true },
   year: { type: Number, required: true },
   genre: { type: String, required: true },
   imageUrl: { type: String, required: true },
   userId: { type: String, required: true },
-  price: { type: Number, required: true },
   ratings: { type: [ratingSchema], default: [] },
   averageRating: { type: Number, default: 0 },
 });
