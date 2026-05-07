@@ -1,14 +1,32 @@
 const Book = require('../models/Book');
 const fs = require('fs');
 
+const isValidGrade = (grade) => Number.isInteger(grade) && grade >= 0 && grade <= 5;
+
+const calculateAverageRating = (ratings) => {
+  if (!ratings.length) {
+    return 0;
+  }
+  const total = ratings.reduce((sum, current) => sum + current.grade, 0);
+  return total / ratings.length;
+};
+
 exports.createBook = (req, res, next) => {
    const bookObject = JSON.parse(req.body.book);
    delete bookObject._id;
    delete bookObject._userId;
+
+   const initialGrade = Number(bookObject?.ratings?.[0]?.grade);
+   const normalizedRatings = isValidGrade(initialGrade)
+     ? [{ userId: req.auth.userId, grade: initialGrade }]
+     : [];
+
    const book = new Book({
        ...bookObject,
        userId: req.auth.userId,
-       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+       ratings: normalizedRatings,
+       averageRating: calculateAverageRating(normalizedRatings)
    });
  
    book.save()
@@ -110,10 +128,9 @@ exports.rateBook = (req, res, next) => {
         grade: rating,
       });
 
-      const total = book.ratings.reduce((sum, current) => sum + current.grade, 0);
-      book.averageRating = total / book.ratings.length;
+      book.averageRating = calculateAverageRating(book.ratings);
 
       return book.save().then((updatedBook) => res.status(200).json(updatedBook));
     })
     .catch((error) => res.status(400).json({ error }));
-  };
+};
